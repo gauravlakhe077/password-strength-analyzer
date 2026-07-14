@@ -60,7 +60,7 @@ with tab1:
         
         try:
             result = zxcvbn(password)
-            score = result['score']  # 0-4
+            score = result['score']
             
             # Score interpretation
             score_labels = ["Very Weak ⚠️", "Weak ⚠️", "Fair ⚡", "Good ✓", "Strong ✅"]
@@ -80,18 +80,19 @@ with tab1:
             
             # Feedback & Suggestions
             if result['feedback']['warning']:
-                st.warning(f"⚠️ **Warning:** {result['feedback']['warning']}")
+                st.warning(f"⚠️ Warning: {result['feedback']['warning']}")
             
             if result['feedback']['suggestions']:
-                st.info("""
-                ### 💡 Suggestions to Improve:
-                """ + "\n".join(f"- {s}" for s in result['feedback']['suggestions']))
+                suggestions_text = "\n".join(f"- {s}" for s in result['feedback']['suggestions'])
+                st.info(f"### 💡 Suggestions to Improve:\n{suggestions_text}")
             
             # Password sequence analysis
             with st.expander("📊 Detailed Sequence Analysis"):
                 st.write("Password patterns detected:")
                 for i, seq in enumerate(result['sequence'], 1):
-                    st.write(f"{i}. **{seq['pattern']}** - {seq.get('token', 'N/A')}")
+                    pattern = seq['pattern']
+                    token = seq.get('token', 'N/A')
+                    st.write(f"{i}. **{pattern}** - {token}")
         
         except Exception as e:
             st.error(f"Error analyzing password: {e}")
@@ -100,17 +101,39 @@ with tab1:
         st.info("👆 Enter a password above to get started!")
 
 with tab2:
-    st.markdown("""
-    ## 📚 How This Tool Works
+    st.header("📚 How This Tool Works")
     
-    ### What is Password Strength?
-    A strong password is resistant to being guessed or cracked. This tool evaluates passwords based on:
+    st.subheader("What is Password Strength?")
+    st.write("A strong password is resistant to being guessed or cracked. This tool evaluates passwords based on:")
     
-    #### 1️⃣ **Basic Checks**
-    - **Length**: Longer passwords are harder to crack
-    - **Character Variety**: Mix of uppercase, lowercase, digits, and symbols
+    st.subheader("1️⃣ Basic Checks")
+    st.write("- **Length**: Longer passwords are harder to crack")
+    st.write("- **Character Variety**: Mix of uppercase, lowercase, digits, and symbols")
     
-    #### 2️⃣ **Advanced Scoring (zxcvbn)**
-    Uses sophisticated algorithms to:
-    - Detect
-
+    st.subheader("2️⃣ Advanced Scoring (zxcvbn)")
+    st.write("Uses sophisticated algorithms to:")
+    st.write("- Detect common patterns (birthdates, sequential numbers)")
+    st.write("- Check against common password dictionaries")
+    st.write("- Analyze entropy")
+    st.write("- Estimate crack time")
+    
+    st.subheader("🎯 Score Interpretation")
+    st.write("- **0 - Very Weak**: Could be cracked in seconds")
+    st.write("- **1 - Weak**: Could be cracked in hours")
+    st.write("- **2 - Fair**: Could be cracked in days/weeks")
+    st.write("- **3 - Good**: Could be cracked in months")
+    st.write("- **4 - Strong**: Very resistant to cracking")
+    
+    st.subheader("🔐 Tips for Strong Passwords")
+    st.write("✅ Use at least 12 characters")
+    st.write("✅ Mix uppercase and lowercase")
+    st.write("✅ Include numbers and symbols")
+    st.write("✅ Avoid common words and patterns")
+    st.write("✅ Don't reuse passwords across sites")
+    st.write("✅ Use a password manager")
+    
+    st.warning("⚠️ Never enter passwords you actually use! This is for educational purposes.")
+
+# Footer
+st.divider()
+st.caption("🔐 Made with Streamlit | Educational Purpose Only")
